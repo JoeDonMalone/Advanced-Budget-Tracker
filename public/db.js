@@ -5,13 +5,9 @@ let budgetVersion;
 const request = indexedDB.open('BudgetDB', budgetVersion || 1);
 
 request.onupgradeneeded = function (e) {
-  console.log('Upgrade needed in IndexDB');
 
   const { oldVersion } = e;
-  console.log(`Object called oldVersion: ${oldVersion}`)
   const newVersion = e.newVersion || db.version;
-
-  console.log(`DB Updated from version ${oldVersion} to ${newVersion}`);
 
   db = e.target.result;
 
@@ -25,8 +21,6 @@ request.onerror = function (e) {
 };
 
 function checkDatabase() {
-  console.log('check db invoked');
-
   // Open a transaction on your BudgetStore db
   let transaction = db.transaction(['BudgetStore'], 'readwrite');
 
@@ -60,7 +54,6 @@ function checkDatabase() {
 
             // Clear existing entries because our bulk add was successful
             currentStore.clear();
-            console.log('Clearing store 🧹');
           }
         });
     }
@@ -68,18 +61,15 @@ function checkDatabase() {
 }
 
 request.onsuccess = function (e) {
-  console.log('success');
   db = e.target.result;
 
   // Check if app is online before reading from db
   if (navigator.onLine) {
-    console.log('Backend online! 🗄️');
     checkDatabase();
   }
 };
 
 const saveRecord = (record) => {
-  console.log('Save record invoked');
   // Create a transaction on the BudgetStore db with readwrite access
   const transaction = db.transaction(['BudgetStore'], 'readwrite');
 
